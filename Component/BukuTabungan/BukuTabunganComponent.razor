@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Components
+
+    <div class="col-md-8" style="margin-top: 7%; text-align: center;">
+        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
+        <p id="" class="teks-desc4">Masukkan data buku tabungan Anda</p>
+        <div class="form-input-data">
+            <div class="col-md-6" style="text-align: left;">
+                <form>
+                    <div class="form-group2">
+                        <label class="teks-data">Nomor rekening</label>
+                        <select class="form-control">
+                            <option>232482323</option>
+                            <option>87716222</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group2">
+                        <label class="teks-data">Nomor baris pada buku</label>
+                        <input type="number" class="form-control" placeholder="nomor baris buku tabungan">
+
+                    </div>
+                    <div class="form-group2">
+                        <label class="teks-data">Saldo terakhir pada buku</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text2">Rp</div>
+                            </div>
+                            <input type="password" class="form-control2" placeholder="saldo terakhir">
+                            <i class="material-icons visibility" style="margin: 5px;">visibility_off</i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn-lanjut" @onclick="@(()=>OnClick.InvokeAsync("cetak"))">Lanjut</button>
+            </div>
+        </div>
+    </div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+}

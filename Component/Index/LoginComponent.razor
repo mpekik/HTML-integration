@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Components
+
+    <div class="col-md-8" style="margin-top: 6.5%; text-align: center;">
+        @if (isPin)
+        {
+
+                    <h2 id="" class="teks-hello2">Masukan PIN ATM Anda</h2>
+            if (!isError)
+            {
+                        <p id="" class="teks-desc2">Tekan "ENTER" jika selesai memasukkan PIN</p>
+                        <p id="input-pin"><input type="password" maxlength="6" autocomplete="off" class="input-pin" name="pin" placeholder="******" @bind="pin" autofocus></p>
+                            <img class="img-pin" src="../../assets/image/input-pin.png" @onclick="InputPin" />
+            }
+            else
+            {
+                        <p id="" class="error-pin">PIN yang anda masukkan salah. Kesempatan untuk mencoba <b>@tryLimit.ToString()x</b> lagi</p>
+                        <p id="input-pin"><input type="password" maxlength="6" autocomplete="off" class="input-pin" name="pin" placeholder="******" @bind="pin" autofocus></p>
+                            <img class="img-pin" src="../../assets/image/input-pin.png" @onclick="InputPin" />
+            }
+        }
+        else
+        {
+                    <h2 class="teks-hello2">Masukan Kartu ATM Anda</h2>
+                    <img class="img-edc" src="../../assets/image/edc.png" @onclick="@(() => isPin = true)">
+        }
+    </div>
+
+@code {
+    private bool isPin = false;
+    private bool isError = false;
+    private string pin;
+
+    private int tryLimit = 3;
+    private string cekPin = "123456";
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private void InputPin()
+    {
+        if (pin.Length == 6)
+        {
+            if (pin == cekPin)
+                OnClick.InvokeAsync("pilihmenu");
+            else
+            {
+                tryLimit -= 1;
+                isError = true;
+                if(tryLimit<1)
+                {
+                    OnClick.InvokeAsync("index");
+                }
+            }
+        }
+    }
+}
+

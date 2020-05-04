@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Components
+
+    <div class="col-md-8">
+        <div class="welcome-right">
+            <h2 class="teks-right-title">Selamat Datang di</h2>
+            <p class="teks-cabang">KCP Cikupa 3</p><br>
+            <p class="teks-desc">Siapkan Kartu ATM Anda untuk memulai transaksi</p>
+            <button class="btn-mulai" @onclick="@(()=>OnClick.InvokeAsync("login"))">Mulai</button>
+        </div>
+    </div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+}

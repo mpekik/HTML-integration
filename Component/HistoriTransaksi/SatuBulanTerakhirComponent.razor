@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Components
+
+    <div class="col-md-8" style="margin-top: 6.5%;">
+        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
+        <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
+        <p id="" class="periode-terpilih">Periode Satu Bulan Terakhir</p>
+        <p id="" class="waktu-periode">@dateStart - @dateEnd</p>
+        <div id="" style="text-align: center; margin-top: 10%;">
+            <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
+            <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
+        </div>
+    </div>
+@if (isVisible)
+{
+    <div class="modal" id="myModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="../../assets/image/loading.gif" style="width: 30%;">
+                    <p>Mohon tunggu,</p>
+                    <p style="margin-top: -1rem;">Histori transaksi sedang dicetak...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+        @code {
+            private string dateEnd = DateTime.Now.ToString("dd/MM/yyyy");
+            private string dateStart = DateTime.Now.AddDays(-30).ToString("dd/MM/yyyy");
+
+            [Parameter]
+            public EventCallback<string> OnClick { get; set; }
+
+            private bool isVisible = false;
+
+            private async Task CheckVisible()
+            {
+                isVisible = !isVisible;
+
+                //ToDO Get Data From Dbase
+                //ToDo Print Function
+                await Task.Delay(10000);
+                Random rng = new Random();
+                int next = rng.Next(0, 1);
+                isVisible = !isVisible;
+                if (next != 0)
+                    OnClick.InvokeAsync("historigagal");
+                else
+                    OnClick.InvokeAsync("historiberhasil");
+            }
+        }

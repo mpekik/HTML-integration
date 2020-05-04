@@ -1,0 +1,67 @@
+﻿@page "/"
+
+@using HTML_integration.Component.HistoriTransaksi
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <img class="bni-logo" src="../assets/image/bni-white.png"><br><br><br>
+            <div class="text-white">
+                <h2 class="teks-sidebar font-qs-bold">Cetak Transaksi Anda</h2><br>
+            </div>
+            <img class="nav-vektor2" src="../assets/image/img-histori2.png">
+        </div>
+
+        @switch (message)
+        {
+            case "bulanberjalan":
+                {
+                    <BulanBerjalanComponent OnClick="ClickHandler"></BulanBerjalanComponent>
+                    break;
+                }
+            case "satubulanterakhir":
+                {
+                    <SatuBulanTerakhirComponent OnClick="ClickHandler"></SatuBulanTerakhirComponent>
+                    break;
+                }
+
+            case "bulanlalu":
+                {
+                    <BulanLaluComponent OnClick="ClickHandler"></BulanLaluComponent>
+                    break;
+                }
+            case "10terakhir":
+                {
+                    <SepuluhTerakhirComponent OnClick="ClickHandler"></SepuluhTerakhirComponent>
+                    break;
+                }
+            case "historiberhasil":
+                {
+                    <HistoriBerhasilComponent></HistoriBerhasilComponent>
+                    break;
+                }
+
+            case "historigagal":
+                {
+                    <HistoriGagalComponent></HistoriGagalComponent>
+                    break;
+                }
+
+            default:
+                {
+                    <FormTransaksiComponent OnClick="ClickHandler"></FormTransaksiComponent>
+                    break;
+                }
+        }
+
+
+    </div>
+</div>
+
+@code {
+              string message = string.Empty;
+              void ClickHandler(string newMessage)
+              {
+                  message = newMessage;
+              }
+          }

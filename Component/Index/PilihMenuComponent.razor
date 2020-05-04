@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager NavMan
+
+<div class="col-md-8" style="text-align: center; margin-top: 7%;">
+    <img class="img-list-menu" src="../assets/image/list-menu.png">
+    <h2 class="teks-jenis-trx">Silakan pilih jenis Transaksi</h2>
+
+    <div class="row2" style="margin-left: 12%;">
+            <div class="card" style="width: 17rem; height: 19rem;" @onclick="buku" >
+                <img class="card-img-top" src="../assets/image/card-bni.png" alt="Card image cap" />
+                <div class="card-body">
+                    <h5 class="card-title">Buku Tabungan</h5>
+                    <p class="card-text">Cetak transaksi pada buku tabungan Anda</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 17rem; height: 19rem; margin-left: 15%;" @onclick="histori" >
+                <img class="card-img-top" src="../assets/image/img-histori.png" alt="Card image cap" style="width: 52%;"/>
+                <div class="card-body">
+                    <h5 class="card-title">Histori Transaksi</h5>
+                    <p class="card-text">Cetak transaksi pada buku tabungan Anda</p>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private void histori()
+    {
+        NavMan.NavigateTo("/historitransaksi");
+    }
+
+    private void buku()
+    {
+        NavMan.NavigateTo("/bukutabungan");
+    }
+}

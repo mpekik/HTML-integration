@@ -1,0 +1,55 @@
+﻿@page "/a"
+
+@using HTML_integration.Component.Index
+@using HTML_integration.Component.HistoriTransaksi
+
+@inject NavigationManager NavMan
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img class="bni-logo" src="../assets/image/bni-white.png"><br><br><br>
+                        <div class="text-white">
+                            <h2 class="teks-sidebar font-qs-bold">Cetak Transaksi Anda</h2><br>
+                        </div>
+                        <img class="nav-vektor" src="../assets/image/vektor-a.png">
+                    </div>
+
+                    @switch (message)
+                    {
+                        case "login":
+                            {
+                                <LoginComponent OnClick="ClickHandler"></LoginComponent>
+                                break;
+                            }
+
+                        case "pilihmenu":
+                            {
+                                <PilihMenuComponent OnClick="ClickHandler"></PilihMenuComponent>
+                                break;
+                            }
+
+                        default:
+                            {
+                                <IndexComponent OnClick="ClickHandler"></IndexComponent>
+                                break;
+                            }
+                    }
+                </div>
+            </div>
+
+
+
+@code
+{
+    string message = string.Empty;
+
+    void ClickHandler(string newMessage)
+    {
+        message = newMessage;
+    }
+    private void Navigate(string url)
+    {
+        NavMan.NavigateTo(url);
+    }
+}

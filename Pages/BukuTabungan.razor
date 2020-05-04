@@ -1,0 +1,53 @@
+﻿@page "/bukutabungan"
+
+@using HTML_integration.Component.BukuTabungan
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <img class="bni-logo" src="../assets/image/bni-white.png"><br><br><br>
+            <div class="text-white">
+                <h2 class="teks-sidebar font-qs-bold">Cetak Transaksi Anda</h2><br>
+            </div>
+            <img class="nav-vektor" src="../assets/image/tabungan-bni.png">
+        </div>
+
+        @switch (message)
+        {
+            case "cetak":
+                {
+                    <CetakBukuComponent></CetakBukuComponent>
+                    break;
+                }
+
+            case "cetakberhasil":
+                {
+                    <CetakBerhasilComponent></CetakBerhasilComponent>
+                    break;
+                }
+
+            case "cetakgagal":
+                {
+                    <CetakGagalComponent></CetakGagalComponent>
+                    break;
+                }
+
+            default:
+                {
+                    <BukuTabunganComponent OnClick="ClickHandler"></BukuTabunganComponent>
+                    break;
+                }
+        }
+        </div>
+    </div>
+    
+
+    @code {
+
+        string message = "cetakgagal";
+        void ClickHandler (string newMessage)
+        {
+            message = newMessage;
+        }
+
+    }
