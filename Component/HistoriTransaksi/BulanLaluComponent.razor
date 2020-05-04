@@ -7,7 +7,7 @@
     <p id="" class="waktu-periode">@dateStart - @dateEnd</p>
     <div id="" style="text-align: center; margin-top: 10%;">
         <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
-        <p><button type="button" class="btn btn-danger-no">Tidak</button></p>
+        <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
     </div>
 </div>
 @if (isVisible)

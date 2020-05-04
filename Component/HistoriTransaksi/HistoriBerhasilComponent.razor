@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using System.Threading
+
+@inject NavigationManager NavMan
 
     <div class="col-md-8" style="margin-top: 15%; text-align: center;">
         <img src="../assets/image/icn-berhasil.png" style="width: 15%;"><br><br>
@@ -7,6 +10,12 @@
 
     </div>
 
-@code {
+@code {     
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(15000);
+        NavMan.NavigateTo("");
+    }
 
 }
