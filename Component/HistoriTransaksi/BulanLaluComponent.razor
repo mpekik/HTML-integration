@@ -29,7 +29,7 @@
 @code {
     private bool isVisible = false;
     private string dateStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString();
-    private string dateEnd = "28/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
+    private string dateEnd = Date;
 
     [Parameter]
     public EventCallback<string> OnClick { get; set; }
