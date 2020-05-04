@@ -4,7 +4,7 @@
     <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
     <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
     <p id="" class="periode-terpilih">Periode bulan berjalan</p>
-    <p id="" class="waktu-periode">01/04/2020 - 29/04/2020</p>
+    <p id="" class="waktu-periode">@dateStart - @dateEnd</p>
     <div id="" style="text-align: center; margin-top: 10%;">
         <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
         <p><button type="button" class="btn btn-danger-no">Tidak</button></p>
@@ -28,8 +28,8 @@
 
 @code {
     private bool isVisible = false;
-    private string dateStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString();
-    private string dateEnd = Date;
+    private string dateStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1).ToString("dd/MM/yyyy");
+    private string dateEnd = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1).ToString("dd/MM/yyyy");
 
     [Parameter]
     public EventCallback<string> OnClick { get; set; }

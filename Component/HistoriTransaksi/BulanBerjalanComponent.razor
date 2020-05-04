@@ -29,8 +29,8 @@
 
         @code {
             private bool isVisible = false;
-            private string dateStart = "01/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
-            private string dateEnd = "28/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
+            private string dateStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("dd/MM/yyyy");
+            private string dateEnd = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1).ToString("dd/MM/yyyy");
 
             [Parameter]
             public EventCallback<string> OnClick { get; set; }
