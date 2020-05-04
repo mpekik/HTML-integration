@@ -1,15 +1,82 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using HTML_integration.Data
 
+@inject Transaksi trx
+@inject Nasabah nsb
+@inject Printer print
+  
     <div class="col-md-8" style="margin-top: 7%; text-align: center;">
         <h2 id="" class="teks-hello2"><b>Masukkan buku Anda pada printer<br>lalu tekan tombol CETAK</b></h2>
         <p id="" class="teks-desc4">Pastikan buku yang Anda masukkan adalah buku tabungan<br>yang ingin dicetak mutasinya</p>
         <img src="../assets/image/print bni.png" style="width: 50%; margin-top: 5%;">
         <div id="" style="text-align: center; margin-top: 5%;">
-            <p><button type="button" class="btn btn-danger2" id="myBtn">Cetak</button></p>
-            <p><button type="button" class="btn btn-danger-no" style="margin-top: 0.1rem;">Batal</button></p>
+            <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Cetak</button></p>
+            <p><button @onclick="@(()=>OnClick.InvokeAsync("bukutabungan"))" type="button" class="btn btn-danger-no" style="margin-top: 0.1rem;">Batal</button></p>
         </div>
     </div>
-
+@if (isVisible)
+{
+    <div class="modal" id="myModal" aria-hidden="true">
+        <div class="modal-dialog2 modal-dialog-centered" role="document" style="top: -2rem;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="../../assets/image/loading.gif" style="width: 30%;">
+                    <p>Mohon tunggu,</p>
+                    <p style="margin-top: -1rem;">Buku Anda sedang dicetak...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 @code {
+    private bool isVisible = false;
+    private string[] ket = { "Debit", "Kredit" };
 
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private async Task CheckVisible()
+    {
+        isVisible = !isVisible;
+
+        //ToDO Get Data From Dbase
+        //ToDo Print Function
+        await Task.Delay(10000);
+        Random rng = new Random();
+        int next = rng.Next(0, 1);
+
+        if (next == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Random rnd = new Random();
+                int next2 = rnd.Next(0, 5);
+                int jml = 0;
+                string kode = string.Empty;
+                string keterangan = string.Empty;
+                if (next != 0)
+                {
+                    keterangan = ket[0];
+                    jml -= rnd.Next(10000000);
+                    kode = "DBT";
+                }
+                else
+                {
+                    keterangan = ket[1];
+                    jml += rnd.Next(10000000);
+                    kode = "CRT";
+                }
+                trx.SetHistori(DateTime.Now.AddMonths(-1).AddDays(i).ToString("dd/MM/yyyy"), keterangan, kode, jml);
+            }
+            await print.PrintPassbook(trx);
+            await Task.Delay(10000);
+            isVisible = !isVisible;
+            trx.Clear();
+            OnClick.InvokeAsync("cetakberhasil");
+
+        }
+        else
+            OnClick.InvokeAsync("cetakgagal");
+
+    }
 }

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components
-
+@inject NavigationManager NavMan
     <div class="col-md-8" style="margin-top: 15%; text-align: center;">
         <img src="../assets/image/icn-berhasil.png" style="width: 15%;"><br><br>
         <p class="teks-desc6">Buku <b style="color: rgb(0, 211, 95);">Berhasil</b> dicetak</p>
@@ -7,5 +7,9 @@
     </div>
 
 @code {
-
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(15000);
+        NavMan.NavigateTo("/");
+    }
 }

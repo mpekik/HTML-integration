@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using HTML_integration.Data
 
+@inject Nasabah nasabah
     <div class="col-md-8" style="margin-top: 6.5%; text-align: center;">
         @if (isPin)
         {
@@ -38,17 +40,26 @@
 
     private void InputPin()
     {
-        if (pin.Length == 6)
+        if (pin != null)
         {
-            if (pin == cekPin)
-                OnClick.InvokeAsync("pilihmenu");
-            else
+            if (pin.Length == 6)
             {
-                tryLimit -= 1;
-                isError = true;
-                if(tryLimit<1)
+                if (pin == cekPin)
                 {
-                    OnClick.InvokeAsync("index");
+                    //ToDO Data Nasabah dari dbase Bank
+                    nasabah.Nama = "Bambang Pamungkas";
+                    nasabah.NoRek.Add("1234567890");
+                    nasabah.NoRek.Add("0987654321");
+                    OnClick.InvokeAsync("pilihmenu");
+                }
+                else
+                {
+                    tryLimit -= 1;
+                    isError = true;
+                    if (tryLimit < 1)
+                    {
+                        OnClick.InvokeAsync("index");
+                    }
                 }
             }
         }

@@ -1,43 +1,97 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using HTML_integration.Data
 
+@inject Nasabah nasabah
+@inject Transaksi trx 
     <div class="col-md-8" style="margin-top: 7%; text-align: center;">
-        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
+        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">@nasabah.Nama</b></h2>
         <p id="" class="teks-desc4">Masukkan data buku tabungan Anda</p>
+        <!-- <label>Input</label>
+    <input type = "text" id="testInput" class = "jQKeyboard" placeholder="testing" value="" /> -->
         <div class="form-input-data">
-            <div class="col-md-6" style="text-align: left;">
-                <form>
-                    <div class="form-group2">
-                        <label class="teks-data">Nomor rekening</label>
-                        <select class="form-control">
-                            <option>232482323</option>
-                            <option>87716222</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group2">
-                        <label class="teks-data">Nomor baris pada buku</label>
-                        <input type="number" class="form-control" placeholder="nomor baris buku tabungan">
-
-                    </div>
-                    <div class="form-group2">
-                        <label class="teks-data">Saldo terakhir pada buku</label>
-                        <div class="input-group mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text2">Rp</div>
-                            </div>
-                            <input type="password" class="form-control2" placeholder="saldo terakhir">
-                            <i class="material-icons visibility" style="margin: 5px;">visibility_off</i>
+            <div class="col-md-12" style="text-align: left;">
+                <div class="col-md-8" style="margin-left: 18.3%;">
+                    <form>
+                        <div class="form-group2">
+                            <label class="teks-data">Nomor rekening</label>
+                            <select @onchange="SelectNoRek" class="form-control">
+                                @foreach (string nr in nasabah.NoRek)
+                                {
+                                    <option value=@nr>@nr</option>
+                                }
+                            </select>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <button type="button" class="btn-lanjut" @onclick="@(()=>OnClick.InvokeAsync("cetak"))">Lanjut</button>
+
+                        <div class="form-group2">
+                            <label class="teks-data">Nomor baris pada buku</label>
+                            <input type="number" @bind="barisBuku" min="1" max=@maxBaris class="form-control" placeholder="nomor baris buku tabungan">
+                            <!-- <div class="invalid">
+                            Harap isi nomor baris
+                        </div> -->
+                        </div>
+                        <div class="form-group2">
+                            <label class="teks-data">Saldo terakhir pada buku</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text2">Rp</div>
+                                </div>
+                                <input @bind="saldoTerakhir" type=@typeSaldo class="form-control2" placeholder="saldo terakhir">
+                                <i @onclick="Visibilty" class="material-icons visibility" style="margin: 5px;">@visibilityIcon</i>
+                            </div>
+                        </div>
+                        <div class="btn-center">
+                            <button @onclick="Next" type="button" class="btn btn-danger3">Lanjut</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-@code {
-    [Parameter]
-    public EventCallback<string> OnClick { get; set; }
-}
+            @code {
+                [Parameter]
+                public EventCallback<string> OnClick { get; set; }
+                //ToDo Ambil maxBaris dari file Config
+                private string maxBaris = "100";
+
+                private string typeSaldo = "password";
+                private string visibilityIcon = "visibility_off";
+
+                private string norek = "";
+                private string barisBuku = "1";
+                private string saldoTerakhir = "";
+
+                protected override async Task OnInitializedAsync()
+                {
+                    norek = nasabah.NoRek[0];
+                }
+
+                private void Visibilty()
+                {
+                    if (typeSaldo == "password")
+                    {
+                        typeSaldo = "number";
+                        visibilityIcon = "visibility";
+                    }
+                    else
+                    {
+                        typeSaldo = "password";
+                        visibilityIcon = "visibility_off";
+                    }
+                }
+
+                public void SelectNoRek(ChangeEventArgs e)
+                {
+                    norek = e.Value.ToString();
+                }
+
+                public void Next()
+                {
+                    if (saldoTerakhir != null&&saldoTerakhir!=""&&saldoTerakhir!=string.Empty)
+                    {
+                        trx.SetTransaksi(norek, saldoTerakhir, barisBuku);
+                        OnClick.InvokeAsync("cetak");
+                    }
+                }
+
+            }

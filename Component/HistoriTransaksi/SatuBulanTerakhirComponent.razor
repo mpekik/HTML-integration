@@ -1,15 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using HTML_integration.Data
+@using System.Threading
 
-    <div class="col-md-8" style="margin-top: 6.5%;">
-        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
-        <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
-        <p id="" class="periode-terpilih">Periode Satu Bulan Terakhir</p>
-        <p id="" class="waktu-periode">@dateStart - @dateEnd</p>
-        <div id="" style="text-align: center; margin-top: 10%;">
-            <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
-            <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
-        </div>
+@inject Transaksi trx
+@inject Printer print
+@inject Nasabah nsb
+
+<div class="col-md-8" style="margin-top: 6.5%;">
+    <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">@nsb.Nama</b></h2>
+    <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
+    <p id="" class="periode-terpilih">Periode Satu Bulan Terakhir</p>
+    <p id="" class="waktu-periode">@dateStart - @dateEnd</p>
+    <div id="" style="text-align: center; margin-top: 10%;">
+        <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
+        <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
     </div>
+</div>
 @if (isVisible)
 {
     <div class="modal" id="myModal" aria-hidden="true">
@@ -26,28 +32,55 @@
 }
 
 
-        @code {
-            private string dateEnd = DateTime.Now.ToString("dd/MM/yyyy");
-            private string dateStart = DateTime.Now.AddDays(-30).ToString("dd/MM/yyyy");
+@code {
+    private bool isVisible = false;
+    private string dateEnd = DateTime.Now.ToString("dd/MM/yyyy");
+    private string dateStart = DateTime.Now.AddDays(-30).ToString("dd/MM/yyyy");
 
-            [Parameter]
-            public EventCallback<string> OnClick { get; set; }
+    private string[] ket = { "Debit", "Kredit" };
 
-            private bool isVisible = false;
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
 
-            private async Task CheckVisible()
+
+    private async Task CheckVisible()
+    {
+        isVisible = !isVisible;
+
+        //ToDO Get Data From Dbase
+        //ToDo Print Function
+        await Task.Delay(10000);
+        Random rng = new Random();
+        int next = rng.Next(0, 5);
+        if (next == 0)
+        {
+            for (int i = 0; i < 20; i++)
             {
-                isVisible = !isVisible;
-
-                //ToDO Get Data From Dbase
-                //ToDo Print Function
-                await Task.Delay(10000);
-                Random rng = new Random();
-                int next = rng.Next(0, 1);
-                isVisible = !isVisible;
-                if (next != 0)
-                    OnClick.InvokeAsync("historigagal");
+                Random rnd = new Random();
+                int next2 = rnd.Next(0, 5);
+                int jml = 0;
+                string kode = string.Empty;
+                string keterangan = string.Empty;
+                if (next2 == 0)
+                {
+                    keterangan = ket[0];
+                    jml -= rnd.Next(10000000);
+                    kode = "DBT";
+                }
                 else
-                    OnClick.InvokeAsync("historiberhasil");
+                {
+                    keterangan = ket[1];
+                    jml += rnd.Next(10000000);
+                    kode = "CRT";
+                }
+                trx.SetHistori(DateTime.Now.AddMonths(-1).AddDays(i).ToString("dd/MM/yyyy"), keterangan, kode, jml);
             }
+            await print.PrintA4(trx);
+            isVisible = !isVisible;
+            OnClick.InvokeAsync("historiberhasil");
         }
+        else
+            OnClick.InvokeAsync("historigagal");
+
+    }
+}

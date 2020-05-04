@@ -1,15 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using HTML_integration.Data
+@using System.Threading
 
-    <div class="col-md-8" style="margin-top: 6.5%;">
-        <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">bambang pamungkas</b></h2>
-        <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
-        <p id="" class="periode-terpilih">Periode 10 Transaksi Terakhir</p>
-        <p id="" class="waktu-periode"> <br> </p>
-        <div id="" style="text-align: center; margin-top: 10%;">
-            <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
-            <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
-        </div>
+@inject Nasabah nsb
+<div class="col-md-8" style="margin-top: 6.5%;">
+    <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">@nsb.Nama</b></h2>
+    <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
+    <p id="" class="periode-terpilih">Periode 10 Transaksi Terakhir</p>
+    <p id="" class="waktu-periode"> <br> </p>
+    <div id="" style="text-align: center; margin-top: 10%;">
+        <p><button @onclick="CheckVisible" type="button" class="btn btn-danger2" id="myBtn">Ya</button></p>
+        <p><button @onclick="@(()=>OnClick.InvokeAsync("formtransaksi"))" type="button" class="btn btn-danger-no">Tidak</button></p>
     </div>
+</div>
 @if (isVisible)
 {
     <div class="modal" id="myModal" aria-hidden="true">
@@ -26,25 +29,25 @@
 }
 
 
-        @code {
-            private bool isVisible = false;
+@code {
+    private bool isVisible = false;
 
-            [Parameter]
-            public EventCallback<string> OnClick { get; set; }
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
 
-            private async Task CheckVisible()
-            {
-                isVisible = !isVisible;
+    private async Task CheckVisible()
+    {
+        isVisible = !isVisible;
 
-                //ToDO Get Data From Dbase
-                //ToDo Print Function
-                await Task.Delay(10000);
-                Random rng = new Random();
-                int next = rng.Next(0, 1);
-                isVisible = !isVisible;
-                if (next != 0)
-                    OnClick.InvokeAsync("historigagal");
-                else
-                    OnClick.InvokeAsync("historiberhasil");
-            }
-        }
+        //ToDO Get Data From Dbase
+        //ToDo Print Function
+        await Task.Delay(10000);
+        Random rng = new Random();
+        int next = rng.Next(0, 1);
+        isVisible = !isVisible;
+        if (next != 0)
+            OnClick.InvokeAsync("historigagal");
+        else
+            OnClick.InvokeAsync("historiberhasil");
+    }
+}
