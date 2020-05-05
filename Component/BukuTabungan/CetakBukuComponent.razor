@@ -45,7 +45,7 @@
         string contents = string.Empty;
         //ToDO Get Data From Dbase
         //ToDo Print Function
-        await Task.Delay(1000);
+        //await Task.Delay(1000);
         Random rng = new Random();
         int next = rng.Next(0, 1);
 
@@ -77,11 +77,9 @@
                      "\t" + jml +
                      "\n";
             }
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
             //print.PrintPassbook(trx);
-            PrintPassbook(ref msg, contents, "PsiPR-OLI", 1);
-            isVisible = !isVisible;
-            OnClick.InvokeAsync("cetakberhasil");
+            bool result = PrintPassbook(ref msg, contents, "PsiPR-OLI", 1);
         }
         else
             OnClick.InvokeAsync("cetakgagal");
@@ -151,6 +149,11 @@
     {
         Process_Document(e.Graphics);
     }
+    public void EndPrintEH(object sender, PrintEventArgs peArgs)
+    {
+        isVisible = !isVisible;
+        OnClick.InvokeAsync("cetakberhasil");
+    }
     private static int Process_Document(Graphics p_graphics)
     {
         int result = 0;
@@ -186,7 +189,7 @@
 
         return result;
     }
-    public static PrintDocument Document(ref int p_height, string contents, string printerName, Margins margin)
+    public PrintDocument Document(ref int p_height, string contents, string printerName, Margins margin)
     {
         PrintDocument result = null;
 
@@ -199,6 +202,7 @@
             result.DefaultPageSettings = GetPrinterPageInfo(printerName);
             result.DefaultPageSettings.Margins = margin;
             //result.DefaultPageSettings.PaperSize = new PaperSize("Custom", (int)(80 * PIXEL_TO_MM), p_height);
+            //result.EndPrint += new PrintEventHandler(EndPrintEH);
             result.PrintPage += new PrintPageEventHandler(PrintPage_Handler);
 
             try

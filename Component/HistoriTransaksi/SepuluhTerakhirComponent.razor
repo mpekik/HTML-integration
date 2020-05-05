@@ -1,8 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using HTML_integration.Data
-@using System.Threading
+@using System.Drawing
+@using System.Drawing.Printing
 
+@inject Transaksi trx
 @inject Nasabah nsb
+@inject Printer print
+
 <div class="col-md-8" style="margin-top: 6.5%;">
     <h2 id="" class="teks-hello2">Hello, <b class="nama-pelanggan">@nsb.Nama</b></h2>
     <p id="" class="teks-desc4">Anda akan mencetak transaksi</p>
@@ -31,6 +35,9 @@
 
 @code {
     private bool isVisible = false;
+    private string[] ket = { "Debit", "Kredit" };
+    private string msg = string.Empty;
+    private static int staty = 0;
 
     [Parameter]
     public EventCallback<string> OnClick { get; set; }
@@ -38,16 +45,182 @@
     private async Task CheckVisible()
     {
         isVisible = !isVisible;
-
+        string contents = string.Empty;
         //ToDO Get Data From Dbase
         //ToDo Print Function
-        await Task.Delay(10000);
+        await Task.Delay(1000);
         Random rng = new Random();
         int next = rng.Next(0, 1);
-        isVisible = !isVisible;
-        if (next != 0)
-            OnClick.InvokeAsync("historigagal");
+
+        if (next == 0)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Random rnd = new Random();
+                int next2 = rnd.Next(0, 5);
+                int jml = 0;
+                string kode = string.Empty;
+                string keterangan = string.Empty;
+                if (next != 0)
+                {
+                    keterangan = ket[0];
+                    jml -= rnd.Next(10000);
+                    kode = "DBT";
+                }
+                else
+                {
+                    keterangan = ket[1];
+                    jml += rnd.Next(1000);
+                    kode = "CRT";
+                }
+                trx.SetHistori(DateTime.Now.AddMonths(-1).AddDays(i).ToString("dd/MM/yyyy"), keterangan, kode, jml);
+
+            }
+            foreach(var tx in trx.historiTransaksi)
+            {
+                contents = contents + tx.tanggalTransaksi +
+                     "\t" + tx.keteranganTransaksi +
+                     "\t" + tx.kodeTransaksi +
+                     "\t" + tx.jumlah +
+                     "\n";
+            }
+            await Task.Delay(1000);
+            //print.PrintPassbook(trx);
+            PrintThermal(ref msg, contents, "BT-T080(U) 1");
+            isVisible = !isVisible;
+            OnClick.InvokeAsync("cetakberhasil");
+        }
         else
-            OnClick.InvokeAsync("historiberhasil");
+            OnClick.InvokeAsync("cetakgagal");
+
+    }
+    private static string font_family = "Arial";
+    private static int font_size = 6;
+    private static int Max_Width = 511;
+    private static int line_height = 15;
+    private static int starting_line = 0;
+    private static int max_line = 50;
+    private static int startY = 0;
+    private static int mLeft = 0;
+    private static int mRight = 0;
+    private static int mTop = 0;
+    private static int mBottom = 0;
+    private static int startX = 0;
+    private static int y_Offset = 0;
+
+    public bool PrintThermal(ref string p_message, string content, string printerName)
+    {
+        bool result = false;
+
+        p_message = string.Empty;
+
+        font_family = "Arial";
+        font_size = 6;
+        Max_Width = 511;
+        line_height = 15;
+        max_line = 10;
+        startY = 0;
+        startX = 5;
+        mLeft = 0;
+        mRight = 0;
+        mTop = 0;
+        mBottom = 0;
+        try
+        {
+            int height = 0;
+            Margins margin = new Margins(mLeft, mRight, mTop, mBottom);
+            PrintDocument document = Document(ref height, content, printerName, margin);
+
+            document.Print();
+
+            result = true;
+        }
+        catch (Exception ex)
+        {
+            p_message = ex.Message;
+        }
+
+        return result;
+    }
+    private static string content = string.Empty;
+    public static PageSettings GetPrinterPageInfo(String printerName)
+    {
+        PrinterSettings settings;
+
+        // printer by its name
+        settings = new PrinterSettings();
+
+        settings.PrinterName = printerName;
+
+        return settings.DefaultPageSettings;
+    }
+    private static void PrintPage_Handler(object sender, PrintPageEventArgs e)
+    {
+        Process_Document(e.Graphics);
+    }
+    private static int Process_Document(Graphics p_graphics)
+    {
+        int result = 0;
+
+        try
+        {
+            Font font = new Font(font_family, font_size);
+            float fontHeight = font.GetHeight();
+
+            string[] lines = content.Split(new[] { '\n' }, StringSplitOptions.None);
+            if (lines.Length < max_line)
+                max_line = lines.Length;
+            for (int i = 0; i < max_line; i++)
+            {
+                if (p_graphics != null)
+                {
+                    p_graphics.DrawString(lines[i]
+                                    , font
+                                    , new SolidBrush(Color.Black), startX, startY + y_Offset);
+                }
+
+                y_Offset = y_Offset + line_height;
+            }
+
+            result = startY + y_Offset - line_height;
+
+            if (p_graphics != null)
+            {
+
+            }
+        }
+        catch { }
+
+        return result;
+    }
+    public static PrintDocument Document(ref int p_height, string contents, string printerName, Margins margin)
+    {
+        PrintDocument result = null;
+
+        try
+        {
+            content = contents;
+
+
+            result = new PrintDocument();
+            result.DefaultPageSettings = GetPrinterPageInfo(printerName);
+            result.DefaultPageSettings.Margins = margin;
+            //result.DefaultPageSettings.PaperSize = new PaperSize("Custom", (int)(80 * PIXEL_TO_MM), p_height);
+            result.PrintPage += new PrintPageEventHandler(PrintPage_Handler);
+
+            try
+            {
+                PrinterSettings settings = new PrinterSettings();
+                settings.PrinterName = printerName;
+                result.PrinterSettings.PrinterName = printerName; // get DefaultPrinter from Windows
+            }
+            catch { }
+        }
+        catch
+        {
+            result = null;
+        }
+
+        return result;
     }
 }
