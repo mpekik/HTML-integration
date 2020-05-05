@@ -64,13 +64,13 @@
                 if (next2 == 0)
                 {
                     keterangan = ket[0];
-                    jml -= rnd.Next(10000000);
+                    jml -= rnd.Next(10000);
                     kode = "DBT";
                 }
                 else
                 {
                     keterangan = ket[1];
-                    jml += rnd.Next(10000000);
+                    jml += rnd.Next(10000);
                     kode = "CRT";
                 }
                 trx.SetHistori(DateTime.Now.AddMonths(-1).AddDays(i).ToString("dd/MM/yyyy"), keterangan, kode, jml);

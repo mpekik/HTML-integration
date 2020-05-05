@@ -6,7 +6,7 @@
 
 @inject NavigationManager NavMan
 @inject Nasabah nasabah 
-
+@inject Transaksi trx
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
@@ -53,5 +53,10 @@
     private void Navigate(string url)
     {
         NavMan.NavigateTo(url);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        trx.Clear();
     }
 }

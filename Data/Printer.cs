@@ -19,19 +19,22 @@ namespace HTML_integration.Data
         int jumlahTabungan = 0;
         public async Task PrintPassbook(Transaksi trx)
         {
-            font = new Font("Times New Roman", 8, FontStyle.Regular);
-            ypoint = 10;
-            _trx = trx;
-            Int32.TryParse(trx.BarisAwal, out int starty);
-            Int32.TryParse(trx.SaldoAkhir, out int jumlahTabungan);
-            starty += 66;
-            printDoc.PrinterSettings.PrinterName = "PsiPR-OLI";
-            printDoc.DefaultPageSettings.PrinterSettings.PrinterName = "PsiPR-OLI";
-            printDoc.DefaultPageSettings = GetPrinterPageInfo("PsiPR-OLI");
-            printDoc.BeginPrint += new PrintEventHandler(BeginPrintEH);
-            printDoc.EndPrint += new PrintEventHandler(EndPrintEH);
-            printDoc.PrintPage += new PrintPageEventHandler(PrintPagePassbook);
-            await Task.Run(()=>printDoc.Print());
+            try
+            {
+                font = new Font("Times New Roman", 8, FontStyle.Regular);
+                ypoint = 10;
+                _trx = trx;
+                Int32.TryParse(trx.BarisAwal, out int starty);
+                Int32.TryParse(trx.SaldoAkhir, out int jumlahTabungan);
+                starty += 66;
+
+                printDoc.DefaultPageSettings = GetPrinterPageInfo("PsiPR-OLI");
+                printDoc.PrintPage += new PrintPageEventHandler(PrintPagePassbook);
+                //printDoc.DefaultPageSettings.PaperSize = new PaperSize("custom", 826, 1169);
+                printDoc.PrinterSettings.PrinterName = "PsiPR-OLI";
+                printDoc.Print();
+            }
+            catch { }
         }
 
         public void BeginPrintEH(object sender, PrintEventArgs peArgs)
@@ -46,19 +49,23 @@ namespace HTML_integration.Data
         }
         private void PrintPagePassbook(object sender, PrintPageEventArgs ppeArgs)
         {
-            Graphics g = ppeArgs.Graphics;
-            //g.DrawString(strJumlahTabungan, font, Brushes.Black, new Point(320, 70));
-            foreach (var listTrx in _trx.historiTransaksi)
+            try
             {
-                g.DrawString(listTrx.tanggalTransaksi, font, Brushes.Black, new Point(2, starty));
-                g.DrawString(listTrx.kodeTransaksi, font, Brushes.Black, new Point(90, starty));
-                g.DrawString(listTrx.keteranganTransaksi, font, Brushes.Black, new Point(130, starty));
-                g.DrawString(listTrx.jumlah.ToString(), font, Brushes.Black, new Point(170, starty));
-                starty += ypoint;
-                jumlahTabungan += listTrx.jumlah;
+                Graphics g = ppeArgs.Graphics;
+                //g.DrawString(strJumlahTabungan, font, Brushes.Black, new Point(320, 70));
+                foreach (var listTrx in _trx.historiTransaksi)
+                {
+                    g.DrawString(listTrx.tanggalTransaksi, font, Brushes.Black, new Point(2, starty));
+                    g.DrawString(listTrx.kodeTransaksi, font, Brushes.Black, new Point(90, starty));
+                    g.DrawString(listTrx.keteranganTransaksi, font, Brushes.Black, new Point(130, starty));
+                    g.DrawString(listTrx.jumlah.ToString(), font, Brushes.Black, new Point(170, starty));
+                    starty += ypoint;
+                    jumlahTabungan += listTrx.jumlah;
+                }
+                string strJumlahTabungan = string.Join("Saldo akhir :", " ", jumlahTabungan);
+                g.DrawString(strJumlahTabungan, font, Brushes.Black, new Point(2, starty));
             }
-            string strJumlahTabungan = string.Join("Saldo akhir :", " ", jumlahTabungan);
-            g.DrawString(strJumlahTabungan, font, Brushes.Black, new Point(2, starty));
+            catch { }
         }
 
         public async Task PrintA4(Transaksi trx)

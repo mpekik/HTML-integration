@@ -10,5 +10,10 @@ namespace HTML_integration.Data
         public string Nama { get; set; }
         public List<string> NoRek = new List<string>();
 
+        public void Clear()
+        {
+            Nama = string.Empty;
+            NoRek.Clear();
+        }
     }
 }
