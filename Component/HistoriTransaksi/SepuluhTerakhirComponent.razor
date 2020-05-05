@@ -88,10 +88,10 @@
             //print.PrintPassbook(trx);
             PrintThermal(ref msg, contents, "BT-T080(U) 1");
             isVisible = !isVisible;
-            OnClick.InvokeAsync("cetakberhasil");
+            OnClick.InvokeAsync("historiberhasil");
         }
         else
-            OnClick.InvokeAsync("cetakgagal");
+            OnClick.InvokeAsync("historigagal");
 
     }
     private static string font_family = "Arial";

@@ -80,6 +80,8 @@
             //await Task.Delay(1000);
             //print.PrintPassbook(trx);
             bool result = PrintPassbook(ref msg, contents, "PsiPR-OLI", 1);
+            await Task.Delay(10000);
+            OnClick.InvokeAsync("cetakberhasil");
         }
         else
             OnClick.InvokeAsync("cetakgagal");
